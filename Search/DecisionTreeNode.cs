@@ -7,11 +7,14 @@ namespace SharpSearch
 {
     public class DecisionTreeNode<T> : Node<T>
     {
-        // The number of childdren.
+        // The number of children.
         private int branches = 0;
 
         // The decision that generated this node.
         private Decision decision;
+
+        // The selected decision node children.
+        public int ChoosenChild = -1;
 
 
         /// <summary>
@@ -41,12 +44,9 @@ namespace SharpSearch
         }
 
 
-        public int GetBranches()
-        {
-            return branches;
-        }
-
-
+        /// <summary>
+        /// The decision that generated this node.
+        /// </summary>
         public Decision LastMove
         {
             get { return decision; }
@@ -55,7 +55,69 @@ namespace SharpSearch
 
 
         /// <summary>
-        /// Return the only child of this node, if there is no children
+        /// Returns the number of children.
+        /// </summary>
+        /// <returns></returns>
+        public int GetBranches()
+        {
+            return branches;
+        }
+
+
+        /// <summary>
+        /// Returns true if and only if a decision was made and thus
+        /// a children decision node is choosen.
+        /// </summary>
+        /// <returns></returns>
+        public bool DecisionMade()
+        {
+            return ChoosenChild != -1;
+        }
+
+
+        /// <summary>
+        /// Resets the decision made on this node.
+        /// </summary>
+        public void ResetDecision()
+        {
+            ChoosenChild = -1;
+        }
+
+
+        /// <summary>
+        /// Resets all the decisions taken from this node.
+        /// </summary>
+        public void ResetDecisions()
+        {
+            resetDecisionsRec();
+        }
+
+
+        /// <summary>
+        /// Recursive method that reset all decision taken.
+        /// </summary>
+        private void resetDecisionsRec()
+        {
+            if (ChoosenChild == -1)
+            {
+                // Base: no decision to reset.
+                return;
+            }
+            else
+            {
+                // Recursive: reset the decision and make recursion
+                // on the choosen node.
+                int index = ChoosenChild;
+                ChoosenChild = -1;
+                DecisionTreeNode<T> next =
+                    (DecisionTreeNode<T>)base.Children.ElementAt(index);
+                next.resetDecisionsRec();
+            }
+        }
+
+
+        /// <summary>
+        /// Returns the only child of this node, if there is no children
         /// or there are more than one return null.
         /// </summary>
         /// <returns>The only child of this node.</returns>
@@ -67,7 +129,24 @@ namespace SharpSearch
             }
             else
             {
-                return null;
+                throw new NullReferenceException();
+            }
+        }
+
+
+        /// <summary>
+        /// Returns the choosen decision node from the children.
+        /// </summary>
+        /// <returns>The choosen decision node.</returns>
+        public DecisionTreeNode<T> GetChoosenChildren()
+        {
+            if (ChoosenChild == -1)
+            {
+                throw new NullReferenceException();
+            }
+            else
+            {
+                return (DecisionTreeNode<T>)base.Children.ElementAt(ChoosenChild);
             }
         }
 
@@ -136,15 +215,45 @@ namespace SharpSearch
         }
 
 
-        public void MakeDecision(int index)
+        /// <summary>
+        /// Make a decision and cut the tree removing all unnecessary branches.
+        /// </summary>
+        /// <param name="index">The index of the choosen decision node.</param>
+        public void MakePermaDecision(int index)
         {
             if (branches == 0 || branches == 1)
             {
                 throw new NullReferenceException();
             }
+            else if (index < 0 || index > branches)
+            {
+                throw new IndexOutOfRangeException();
+            }
             else
             {
                 removeAllButAt(index);
+                ChoosenChild = index;
+            }
+        }
+
+
+        /// <summary>
+        /// Make a decision without removing nodes from the tree.
+        /// </summary>
+        /// <param name="index">The index of the choosen decision node.</param>
+        public void MakeDecision(int index)
+        {
+            if (branches == 0)
+            {
+                throw new NullReferenceException();
+            }
+            else if (index < 0 || index > branches)
+	        {
+                throw new IndexOutOfRangeException();
+	        }
+            else
+            {
+                ChoosenChild = index;
             }
         }
 
@@ -156,6 +265,37 @@ namespace SharpSearch
         /// </summary>
         /// <param name="h">The heursitic for the decision to take.</param>
         /// <returns>The decision made.</returns>
+        internal void NextPermaDecision(int index)
+        {
+            if (branches == 0)
+            {
+                // Base: this is a leaf no more decision should be expected.
+                throw new NullReferenceException();
+            }
+            else if (index < 0 || index > branches)
+            {
+                throw new IndexOutOfRangeException();
+            }
+            else if (branches > 1)
+            {
+                // Base: multiple children, a decision is needed.
+                MakePermaDecision(index);
+            }
+            else
+            {
+                // Recursive: only child, no decision needed at this level.
+                this.GetOnlyChild().NextPermaDecision(index);
+            }
+        }
+
+
+        /// <summary>
+        /// This method explores the node children in depth until
+        /// multiple decision are possible. Than given the heuristic
+        /// selects a decision.
+        /// </summary>
+        /// <param name="h">The heursitic for the decision to take.</param>
+        /// <returns>The decision made.</returns>
         internal void NextDecision(int index)
         {
             if (branches == 0)
@@ -163,20 +303,24 @@ namespace SharpSearch
                 // Base: this is a leaf no more decision should be expected.
                 throw new NullReferenceException();
             }
-            else if (branches > 1)
+            else if (index < 0 || index > branches)
+            {
+                throw new IndexOutOfRangeException();
+            }
+            else if (ChoosenChild == -1)
             {
                 // Base: multiple children, a decision is needed.
                 MakeDecision(index);
             }
             else
             {
-                // Recursive: only child, no decision needed at this level.
-                this.GetOnlyChild().NextDecision(index);
+                // Recursive: no decision needed at this level.
+                this.GetChoosenChildren().NextDecision(index);
             }
         }
 
 
-        public void ExternalDecisionMade(Decision decision)
+        public void ExternalPermaDecisionMade(Decision decision)
         {
             if (branches == 0)
             {
@@ -186,7 +330,7 @@ namespace SharpSearch
             else if (branches == 1)
             {
                 // Recursive: only child, the decision does not refer to this level.
-                this.GetOnlyChild().ExternalDecisionMade(decision);
+                this.GetOnlyChild().ExternalPermaDecisionMade(decision);
             }
             else
             {
@@ -199,9 +343,39 @@ namespace SharpSearch
                         index = base.Children.IndexOf(node);
                     }
                 }
+                ChoosenChild = index;
                 removeAllButAt(index);
             }
         }
+
+
+        public void ExternalDecisionMade(Decision decision)
+        {
+            if (branches == 0)
+            {
+                // last possible decision, nothing to do.
+                return;
+            }
+            else if (ChoosenChild != -1)
+            {
+                // Recursive: the decision does not refer to this level.
+                this.GetChoosenChildren().ExternalDecisionMade(decision);
+            }
+            else
+            {
+                // Base: multiple children, a decision is taken.
+                int index = -1;
+                foreach (DecisionTreeNode<T> node in base.Children.ToList())
+                {
+                    if (decision.GetImpl().Equals(node.LastMove.GetImpl()))
+                    {
+                        index = base.Children.IndexOf(node);
+                    }
+                }
+                ChoosenChild = index;
+            }
+        }
+
 
         /// <summary>
         /// Check if the current node has no more child.

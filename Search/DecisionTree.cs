@@ -23,10 +23,35 @@ namespace SharpSearch
         }
 
 
+        public void MakePermaDecision(int index)
+        {
+            root.NextPermaDecision(index);
+        }
+
+
         public void MakeDecision(int index)
         {
             root.NextDecision(index);
         }
+
+
+        public void ResetDecisions()
+        {
+            root.ResetDecisions();
+        }
+
+
+        public void ExternalPermaDecisionMade(Decision decision)
+        {
+            root.ExternalPermaDecisionMade(decision);
+        }
+
+
+        public void ExternalDecisionMade(Decision decision)
+        {
+            root.ExternalDecisionMade(decision);
+        }
+
 
         public DecisionTreeNode<T> GetRoot()
         {
