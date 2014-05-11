@@ -6,8 +6,13 @@ using System.Collections.ObjectModel;
 
 namespace SharpSearch
 {
+    /// <summary>
+    /// Defines a list of Node.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class NodeList<T> : Collection<Node<T>>
     {
+        // Constructors.
         public NodeList() : base() { }
 
         public NodeList(int size)
@@ -19,6 +24,10 @@ namespace SharpSearch
 			}
         }
 
+
+        /// <summary>
+        /// Given a value of type T returns the node containing it.
+        /// </summary>
         public Node<T> FindByValue(T value)
         {
             // Search for the value.

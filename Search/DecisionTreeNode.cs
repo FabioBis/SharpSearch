@@ -5,6 +5,10 @@ using System.Text;
 
 namespace SharpSearch
 {
+    /// <summary>
+    /// Defines a node for a decision tree.
+    /// </summary>
+    /// <typeparam name="T">Environment in which to take a decision.</typeparam>
     public class DecisionTreeNode<T> : Node<T>
     {
         // The number of children.
@@ -94,7 +98,7 @@ namespace SharpSearch
 
 
         /// <summary>
-        /// Recursive method that reset all decision taken.
+        /// Recursive method that resets all decision taken.
         /// </summary>
         private void resetDecisionsRec()
         {
@@ -105,7 +109,7 @@ namespace SharpSearch
             }
             else
             {
-                // Recursive: reset the decision and make recursion
+                // Recursive: resets the decision and make recursion
                 // on the choosen node.
                 int index = ChoosenChild;
                 ChoosenChild = -1;
@@ -193,7 +197,7 @@ namespace SharpSearch
 
 
         /// <summary>
-        /// Remove all children but the one given by the index.
+        /// Removes all children but the one given by the index.
         /// </summary>
         /// <param name="index">The index to the node List not to remove.</param>
         private void removeAllButAt(int index)
@@ -259,9 +263,9 @@ namespace SharpSearch
 
 
         /// <summary>
-        /// This method explores the node children in depth until
-        /// multiple decision are possible. Than given the heuristic
-        /// select a decision and cut all the discared branches.
+        /// This method explores the node children in depth until multiple
+        /// decision are possible. Then given the heuristic select a decision
+        /// and cut all the discarded branches.
         /// </summary>
         /// <param name="h">The heursitic for the decision to take.</param>
         /// <returns>The decision made.</returns>
@@ -290,9 +294,8 @@ namespace SharpSearch
 
 
         /// <summary>
-        /// This method explores the node children in depth until
-        /// multiple decision are possible. Than given the heuristic
-        /// selects a decision.
+        /// This method explores the node children in depth until multiple
+        /// decision are possible. Then given the heuristic selects a decision.
         /// </summary>
         /// <param name="h">The heursitic for the decision to take.</param>
         /// <returns>The decision made.</returns>
@@ -320,6 +323,12 @@ namespace SharpSearch
         }
 
 
+        /// <summary>
+        /// This method explores the node children in depth until multiple
+        /// decision are possible. Then applies the external decision cutting
+        /// the discarded branches.
+        /// </summary>
+        /// <param name="decision">The external decision to be applied.</param>
         public void ExternalPermaDecisionMade(Decision decision)
         {
             if (branches == 0)
@@ -349,6 +358,11 @@ namespace SharpSearch
         }
 
 
+        /// <summary>
+        /// This method explores the node children in depth until multiple
+        /// decision are possible. Then applies the external decision.
+        /// </summary>
+        /// <param name="decision">The external decision to be applied.</param>
         public void ExternalDecisionMade(Decision decision)
         {
             if (branches == 0)
@@ -378,7 +392,7 @@ namespace SharpSearch
 
 
         /// <summary>
-        /// Check if the current node has no more child.
+        /// Checks if the current node has no more children.
         /// </summary>
         /// <returns>
         /// true if the current node is a leaf, false otherwise.

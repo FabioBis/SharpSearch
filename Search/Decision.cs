@@ -44,10 +44,12 @@ namespace SharpSearch
     /// </summary>
     public class MinMaxDecision : Decision
     {
+        // The ranking value of this decision.
         public int value;
+        // The type of the decision (Min or Max).
         public MiniMax type;
 
-
+        // Constructors.
         public MinMaxDecision(Object obj, MiniMax type)
             : base(obj)
         {
@@ -64,12 +66,20 @@ namespace SharpSearch
         }
 
 
+        /// <summary>
+        /// Setter method for the decision ranking value.
+        /// </summary>
+        /// <param name="value"></param>
         public void SetValue(int value)
         {
             this.value = value;
         }
 
 
+        /// <summary>
+        /// getter method for the decision ranking value.
+        /// </summary>
+        /// <returns></returns>
         public int GetValue()
         {
             return this.value;
