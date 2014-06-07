@@ -119,5 +119,26 @@ namespace SharpSearch
         {
             return root;
         }
+
+        /// <summary>
+        /// Returns <code>true</code> if the given decision is taken
+        /// into account building the decision tree, <code>false</code>
+        /// otherwise.
+        /// </summary>
+        /// <param name="decision">The decision to take next.</param>
+        /// <returns>Boolean value.</returns>
+        public bool NextDecisionPlanned(Decision decision)
+        {
+            return root.NextDecisionPlanned(decision);
+        }
+
+        /// <summary>
+        /// Returns the node representing the next choice point.
+        /// </summary>
+        /// <returns></returns>
+        public DecisionTreeNode<T> GetNextChoicePoint()
+        {
+            return root.GetNextChoicePoint();
+        }
     }
 }

@@ -44,7 +44,6 @@ namespace SharpSearch
         // The selected decision node children.
         public int ChoosenChild = -1;
 
-
         /// <summary>
         /// Default constructor. Build an empty decision node.
         /// </summary>
@@ -53,7 +52,6 @@ namespace SharpSearch
         {
             base.Children = new NodeList<T>();
         }
-
 
         /// <summary>
         /// Constructor with two parameters.
@@ -71,7 +69,6 @@ namespace SharpSearch
             base.Children = new NodeList<T>();
         }
 
-
         /// <summary>
         /// The decision that generated this node.
         /// </summary>
@@ -81,7 +78,6 @@ namespace SharpSearch
             set { decision = value; }
         }
 
-
         /// <summary>
         /// Returns the number of children.
         /// </summary>
@@ -90,7 +86,6 @@ namespace SharpSearch
         {
             return branches;
         }
-
 
         /// <summary>
         /// Returns true if and only if a decision was made and thus
@@ -102,7 +97,6 @@ namespace SharpSearch
             return ChoosenChild != -1;
         }
 
-
         /// <summary>
         /// Resets the decision made on this node.
         /// </summary>
@@ -111,7 +105,6 @@ namespace SharpSearch
             ChoosenChild = -1;
         }
 
-
         /// <summary>
         /// Resets all the decisions taken from this node.
         /// </summary>
@@ -119,7 +112,6 @@ namespace SharpSearch
         {
             resetDecisionsRec();
         }
-
 
         /// <summary>
         /// Recursive method that resets all decision taken.
@@ -143,7 +135,6 @@ namespace SharpSearch
             }
         }
 
-
         /// <summary>
         /// Returns the only child of this node, if there is no children
         /// or there are more than one return null.
@@ -157,10 +148,9 @@ namespace SharpSearch
             }
             else
             {
-                throw new NullReferenceException();
+                return null;
             }
         }
-
 
         /// <summary>
         /// Returns the choosen decision node from the children.
@@ -178,7 +168,6 @@ namespace SharpSearch
             }
         }
 
-
         /// <summary>
         /// Add a new child (a leaf) to the current node.
         /// </summary>
@@ -188,7 +177,6 @@ namespace SharpSearch
             base.Children.Add(node);
             branches++;
         }
-
 
         /// <summary>
         /// This method removes a node from the Children list.
@@ -219,7 +207,6 @@ namespace SharpSearch
             }
         }
 
-
         /// <summary>
         /// Removes all children but the one given by the index.
         /// </summary>
@@ -242,7 +229,6 @@ namespace SharpSearch
             }
         }
 
-
         /// <summary>
         /// Make a decision and cut the tree removing all unnecessary branches.
         /// </summary>
@@ -264,7 +250,6 @@ namespace SharpSearch
             }
         }
 
-
         /// <summary>
         /// Make a decision without removing nodes from the tree.
         /// </summary>
@@ -284,7 +269,6 @@ namespace SharpSearch
                 ChoosenChild = index;
             }
         }
-
 
         /// <summary>
         /// This method explores the node children in depth until multiple
@@ -316,12 +300,10 @@ namespace SharpSearch
             }
         }
 
-
         /// <summary>
         /// This method explores the node children in depth until multiple
         /// decision are possible. Then given the heuristic selects a decision.
         /// </summary>
-        /// <param name="h">The heursitic for the decision to take.</param>
         /// <returns>The decision made.</returns>
         internal void NextDecision(int index)
         {
@@ -345,7 +327,6 @@ namespace SharpSearch
                 this.GetChoosenChildren().NextDecision(index);
             }
         }
-
 
         /// <summary>
         /// This method explores the node children in depth until multiple
@@ -381,7 +362,6 @@ namespace SharpSearch
             }
         }
 
-
         /// <summary>
         /// This method explores the node children in depth until multiple
         /// decision are possible. Then applies the external decision.
@@ -414,7 +394,6 @@ namespace SharpSearch
             }
         }
 
-
         /// <summary>
         /// Checks if the current node has no more children.
         /// </summary>
@@ -426,5 +405,58 @@ namespace SharpSearch
             return branches == 0;
         }
 
+        /// <summary>
+        /// Returns <code>true</code> if the given decision is taken
+        /// into account building the decision tree, <code>false</code>
+        /// otherwise.
+        /// </summary>
+        /// <param name="decision"></param>
+        internal bool NextDecisionPlanned(Decision decision)
+        {
+            if (branches == 0)
+            {
+                // Leaf, no decision can be made here.
+                return false;
+            }
+            else if (ChoosenChild != -1)
+            {
+                // Recursive: the decision does not refers to this level.
+                return this.GetChoosenChildren().NextDecisionPlanned(decision);
+            }
+            else
+            {
+                // Base: multiple children, a decision could be taken..
+                int index = -1;
+                foreach (DecisionTreeNode<T> node in base.Children.ToList())
+                {
+                    if (decision.GetImpl().Equals(node.LastMove.GetImpl()))
+                    {
+                        index = base.Children.IndexOf(node);
+                    }
+                }
+                return index != -1;
+            }
+        }
+
+        /// <summary>
+        /// Returns the node representing the next choice point.
+        /// </summary>
+        internal DecisionTreeNode<T> GetNextChoicePoint()
+        {
+            if (branches == 0)
+            {
+                // Leaf, no decision can be made here.
+                return null;
+            }
+            else if (ChoosenChild != -1)
+            {
+                // Recursive: the decision does not refers to this level.
+                return this.GetChoosenChildren().GetNextChoicePoint();
+            }
+            else
+            {
+                return this;
+            }
+        }
     }
 }
