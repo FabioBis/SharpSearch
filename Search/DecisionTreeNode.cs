@@ -740,10 +740,6 @@ namespace SharpSearch
                 // Base: this is a leaf no more decision should be expected.
                 throw new NullReferenceException();
             }
-            else if (index < 0 || index > branches)
-            {
-                throw new IndexOutOfRangeException();
-            }
             else if (ChoosenChild == -1)
             {
                 // Base: multiple children, a decision is needed.

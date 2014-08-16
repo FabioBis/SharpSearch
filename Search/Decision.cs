@@ -59,6 +59,9 @@ namespace SharpSearch
             return impl;
         }
 
+        /// <summary>
+        /// Returns the maximum value between <code>a</code> and <code>b</code>.
+        /// </summary>
         public static int Max(int a, int b)
         {
             if (a >= b)
@@ -71,6 +74,9 @@ namespace SharpSearch
             }
         }
 
+        /// <summary>
+        /// Returns the minimum value between <code>a</code> and <code>b</code>.
+        /// </summary>
         public static int Min(int a, int b)
         {
             if (a > b)
