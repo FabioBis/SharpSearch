@@ -111,14 +111,12 @@ namespace SharpSearch
             this.type = type;
         }
 
-
         public MinMaxDecision(Object obj, MiniMax type, int value)
             : base(obj)
         {
             this.value = value;
             this.type = type;
         }
-
 
         /// <summary>
         /// Setter method for the decision ranking value.
@@ -128,7 +126,6 @@ namespace SharpSearch
         {
             this.value = value;
         }
-
 
         /// <summary>
         /// getter method for the decision ranking value.

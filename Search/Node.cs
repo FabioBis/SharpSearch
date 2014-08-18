@@ -50,7 +50,6 @@ namespace SharpSearch
             this.children = children;
         }
 
-
         /// <summary>
         /// The node implementation data.
         /// </summary>
@@ -66,7 +65,6 @@ namespace SharpSearch
             }
         }
 
-
         /// <summary>
         /// A list of children nodes.
         /// </summary>
@@ -81,7 +79,6 @@ namespace SharpSearch
                 children = value;
             }
         }
-
 
         /// <summary>
         /// Returns if and only if the current node is a leaf

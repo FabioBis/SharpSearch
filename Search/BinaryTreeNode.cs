@@ -32,7 +32,9 @@ namespace SharpSearch
     class BinaryTreeNode<T> : Node<T>
     {
         public BinaryTreeNode() : base() { }
+
         public BinaryTreeNode(T data) : base(data, null) { }
+
         public BinaryTreeNode(T data,
                               BinaryTreeNode<T> left,
                               BinaryTreeNode<T> right)
@@ -67,7 +69,6 @@ namespace SharpSearch
                 base.Children[0] = value;
             }
         }
-
 
         public BinaryTreeNode<T> Right
         {

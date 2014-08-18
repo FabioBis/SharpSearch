@@ -48,7 +48,6 @@ namespace SharpSearch
 			}
         }
 
-
         /// <summary>
         /// Given a value of type T returns the node containing it.
         /// </summary>
